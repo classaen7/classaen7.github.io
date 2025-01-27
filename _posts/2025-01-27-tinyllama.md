@@ -10,6 +10,8 @@ tags:
 
 
 date: 2025-01-27 19:24 +0900
+
+
 ---
 
 
@@ -22,17 +24,18 @@ TinyLlama는 SLM(Small Language Model) 중 하나로, 기존 Llama 모델을 작
 
 
 
+
 # Abstract
 
-- 1.1B 규모의 작은 언어 모델
+해당 논문은 다음의 3가지 내용을 설명한다.
 
-- Llama 2의 아키텍처와 토크나이저를 기반
+- **Llama 2 기반의 1.1B 규모의 작은 언어 모델** <br>
 
-- FlashAttention과 Lit-GPT와 같은 오픈소스 커뮤니티의 여러 발전된 기술을 활용하여 계산 효율성을 크게 향상
+- **FlashAttention과 Lit-GPT 등의 기술을 활용한 계산 효율성 향상** <br>
 
-- 다양한 다운스트림 작업에서 뛰어난 성능
+- **다양한 다운스트림 작업에서 뛰어난 성능** <br>
 
-- GitHub에 공개
+
 
 # Introudce
 
