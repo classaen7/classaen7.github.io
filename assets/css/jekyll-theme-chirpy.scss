@@ -8,3 +8,24 @@
 ';
 
 /* append your custom style below */
+
+#sidebar {
+    padding-left: 0;
+    padding-right: 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    overflow-y: auto;
+    width: 260px;
+    z-index: 99;
+    /* background: var(--sidebar-bg); */
+    background-image: url(); /* <- url of your background image */
+    background-size: cover; /* <- customize the image size */
+    background-repeat: no-repeat; /* <- no repeat */
+    background-position: top; /* <- postion */
+    background-color: rgba(128, 128, 128, 0.2); /* <- light gray color with transparency */
+    border-right: 1px solid var(--sidebar-border-color);
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
