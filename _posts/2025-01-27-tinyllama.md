@@ -38,7 +38,7 @@ TinyLlama는 SLM(Small Language Model) 중 하나로, 기존 Llama 모델을 작
 
 ## 1. Introduction
 
-자연어 처리(NLP)에서 언어 모델의 성능 향상은 주로 모델 크기와 학습 데이터의 확장에서 비롯되며, 일부 연구는 대규모 모델에서만 나타나는 능력을 발견했다. (emergent intelligence)
+자연어 처리(NLP)에서 언어 모델의 성능 향상은 주로 모델 크기와 학습 데이터의 확장에서 비롯되며, 일부 연구는 대규모 모델에서만 나타나는 능력을 발견했다. (emergent intelligence) <br>
 그러나 작은 모델을 더 많은 데이터로 학습시키는 가능성은 충분히 탐구되지 않았다. 
 이 논문은 스케일링 법칙의 한계를 넘어, 10억 개 매개변수를 가진 Llama2 모델을 대규모 데이터로 학습시켜 작은 모델의 성능과 가능성을 탐구한다.
 
@@ -55,17 +55,16 @@ TinyLlama의 Pre-training 과정에 대한 데이터셋, 모델 아키텍처, �
 SlimPajama와 StarCoder 데이터를 약 7:3 비율로 결합하여 9500억 개의 토큰을 생성하고, Llama 토크나이저를 사용하여 처리한다.
 
 
-#### SlimPajama
+- **SlimPajama**
 
 RedPajama 데이터셋에서 파생된 고품질 코퍼스로 중복 제거 및 데이터 정제를 통해 원래 RedPajama의 50% 토큰만 유지한다.
 
 
+- **Starcoderdata**
 
-#### Starcoderdata 
+86개의 프로그래밍 언어에 대한 코드 데이터를 포함하며, GitHub 이슈와 텍스트-코드 쌍도 포함한다. <font color="gray">SlimPajama에 포함된 Github 데이터는 중복 방지를 위해 제거한다.</font>
 
-86개의 프로그래밍 언어에 대한 코드 데이터를 포함하며, GitHub 이슈와 텍스트-코드 쌍도 포함한다.
-<font color="gray">SlimPajama에 포함된 Github 데이터는 중복 방지를 위해 제거한다.</font>
-
+<br>
 
 - **데이터 예시**
 
@@ -73,14 +72,15 @@ RedPajama 데이터셋에서 파생된 고품질 코퍼스로 중복 제거 및 
 | :----: | :---: | :--- |
 |source/rule_lists.ads|jquorning/CELLE|with Ada.Containers. Doubly_Linked_Lists; <br>  limited with Rules;<br>  package Rule_Lists is type Rule_Access is access all Rules.Rule_Record; <br>  package Lists is new Ada.Containers.Doubly_Linked_Lists (Element_Type => Rule_Access); <br>  -- function Element (List : Lists.List) return Natural;  end Rule_Lists; |
 
-> SlimPajama는 문장 데이터셋, StarCoder 코드 데이터셋을 담고 있다.
+> SlimPajama는 문장 데이터셋, StarCoder 코드 데이터셋을 담고 있다.<br>
 > 각 데이터셋의 자세한 예시는 허깅페이스를 통해 확인 가능하다.
 
 ### 2.2 Architecture
 
 Llama 모델 시리즈의 아키텍처를 따르며, Transformer 디코더만을 사용한다.
 
-다음의 하이퍼파라미터를 사용한다.
+
+- **HyperParameters**
 
 | Hidden Size | Intermediate Hidden Size | Context Len | Heads | Layers | Vocab Size |
 |-------------|---------------------------|-------------|-------|--------|------------|
@@ -88,21 +88,24 @@ Llama 모델 시리즈의 아키텍처를 따르며, Transformer 디코더만을
 
 
 - **Positional Embedding**
+
 Rotary Positional Embedding (RoPE)을 사용하여 위치 정보를 모델에 삽입한다. 
 <br>
 
 - **Pre-norm and RMSNorm**
+
 Transformer 서브 레이어 입력을 정규화(Pre-norm)하여 학습 안정성 개선한다.
 효율성을 높이기 위해 RMSNorm 정규화 함수를 적용한다.
 <br>
 
 - **SwiGLU**
-Swish 활성화 함수와 Gated Linear Units (GLU)을 결합한 활성화 함수이다.
+
+Swish 활성화 함수와 Gated Linear Units (GLU)을 결합한 활성화 함수를 사용한다.
 <br>
 
 - **Grouped-query Attention**
 
-![TinyLlama_logo]( /assets/posts/TinyLlama/gqa.png){: style="display: block; margin: auto; width: 50%;"}
+![TinyLlama_logo]( /assets/posts/TinyLlama/gqa.png){: style="display: block; margin: auto; width: 100%;"}
 
 Transformer 모델에서 메모리 효율성을 높이고 추론 속도를 개선하기 위해 설계된 Attention 메커니즘의 변형이다.
 
@@ -110,36 +113,39 @@ Transformer 모델에서 메모리 효율성을 높이고 추론 속도를 개�
 
 ### 2.3 Speed Optimization
 
-사실 해당 논문에서 모델의 크기를 줄이는 핵심 기법은 여기인것 같다.
-
 
 #### Fully Sharded Data Parallel (FSDP)
 
-![TinyLlama_logo]( /assets/posts/TinyLlama/fsdp.png){: style="display: block; margin: auto; width: 50%;"}
+```
 
-학습 과정에서 FSDP를 통합하여 다중 GPU 및 다중 노드 환경을 효과적으로 활용합니다. 이를 통해 학습 속도와 효율성을 크게 개선하였습니다.
+![TinyLlama_logo]( /assets/posts/TinyLlama/fsdp.png){: style="display: block; margin: auto; width: 100%;"}
+
+학습 과정에서 FSDP를 통합하여 다중 GPU 및 다중 노드 환경을 효과적으로 활용한다. 이를 통해 학습 속도와 효율성을 크게 개선하였다.
 
 
 #### FlashAttention
-FlashAttention-2 (Dao, 2023)를 통합하여 최적화된 어텐션 메커니즘을 구현했습니다. 이와 함께 Fused LayerNorm, Fused Cross Entropy Loss, Fused Rotary Positional Embedding 등을 사용하여 계산 처리량을 크게 향상시켰습니다.
+FlashAttention-2를 통합하여 최적화된 어텐션 메커니즘을 구현한다. 이와 함께 Fused LayerNorm, Fused Cross Entropy Loss, Fused Rotary Positional Embedding 등을 사용하여 계산 처리량을 크게 향상시켰다.
 
 
 #### xFormers
-기존 SwiGLU 모듈을 xFormers(Lefaudeux et al., 2022)의 Fused SwiGLU 모듈로 교체하여 효율성을 더욱 강화하였습니다.
+기존 SwiGLU 모듈을 xFormers의 Fused SwiGLU 모듈로 교체하여 효율성을 더욱 강화하였다.
 
+```
 
 #### Speed Comparison with Existing Models
-| | GPU Hours|
+
+|  | GPU Hours|
 | :--: | :--:|
 | Pythia-1.0B | 4,830 |
 |MPT-1.3B | 7,920|
 | TinyLlama| 3,456|
 
+
 속도 향상 모듈을 구현한 결과, A100-40G GPU에서 초당 24,000개의 토큰 처리량을 달성했습니다. Pythia-1.0B 및 MPT-1.3B와 비교하여 GPU 시간 측면에서 더 효율적인 학습 속도를 기록
 
 ### 2.4 Training & 2.5 Version 1.1
 
-![TinyLlama_logo]( /assets/posts/TinyLlama/figure_1.png){: style="display: block; margin: auto; width: 50%;"}
+![TinyLlama_logo]( /assets/posts/TinyLlama/figure_1.png){: style="display: block; margin: auto; width: 100%;"}
 
 TinyLlama는 다음 토큰을 예측하는 방식인 Autoregressive 방식으로, 다음의 설정을 기반으로 TinyLlama는 효율적으로 학습을 진행하였다.
 
@@ -160,7 +166,7 @@ TinyLlama는 다음 토큰을 예측하는 방식인 Autoregressive 방식으로
 
 스케줄러와 데이터 로딩 과정에 관한 implementation 이슈를 해결하기 위해 모델을 처음부터 다시 학습시켰고 다음과 같은 주요 변경 사항과 개선이 이루어졌다.
 
-![TinyLlama_logo]( /assets/posts/TinyLlama/fsdp.png){: style="display: block; margin: auto; width: 50%;"}
+
  
 #### 1. 통신 오버헤드 감소
 FSDP(Fully Sharded Data Parallel)를 활용해 노드 내부에서만 모델 파라미터를 샤딩하도록 변경하여 통신 오버헤드를 줄였
