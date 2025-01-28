@@ -15,7 +15,7 @@ date: 2025-01-27 19:24 +0900
 ---
 
 
-![TinyLlama_logo](posts/assets/TinyLlama/TinyLlama_logo.png){: style="display: block; margin: auto; width: 50%;"}
+![TinyLlama_logo](_posts/assets/TinyLlama/TinyLlama_logo.png){: style="display: block; margin: auto; width: 50%;"}
 
 
 LLM(Large Language Model)을 학습하거나 사용할 때 하드웨어적 제약으로 인해 개인 컴퓨터나 GPU 서버에서 모델을 실행하기 어려운 경우가 많다. 이러한 한계는 작은 언어 모델(SLM)을 찾게 되는 주요 동기가 된다.
@@ -102,7 +102,7 @@ Swish 활성화 함수와 Gated Linear Units (GLU)을 결합한 활성화 함수
 
 - **Grouped-query Attention**
 
-![TinyLlama_logo](posts/assets/TinyLlama/gqa.png){: style="display: block; margin: auto; width: 50%;"}
+![TinyLlama_logo](_posts/assets/TinyLlama/gqa.png){: style="display: block; margin: auto; width: 50%;"}
 
 Transformer 모델에서 메모리 효율성을 높이고 추론 속도를 개선하기 위해 설계된 Attention 메커니즘의 변형이다.
 
@@ -115,7 +115,7 @@ Transformer 모델에서 메모리 효율성을 높이고 추론 속도를 개�
 
 #### Fully Sharded Data Parallel (FSDP)
 
-![TinyLlama_logo](posts/assets/TinyLlama/fsdp.png){: style="display: block; margin: auto; width: 50%;"}
+![TinyLlama_logo](_posts/assets/TinyLlama/fsdp.png){: style="display: block; margin: auto; width: 50%;"}
 
 학습 과정에서 FSDP를 통합하여 다중 GPU 및 다중 노드 환경을 효과적으로 활용합니다. 이를 통해 학습 속도와 효율성을 크게 개선하였습니다.
 
@@ -139,7 +139,7 @@ FlashAttention-2 (Dao, 2023)를 통합하여 최적화된 어텐션 메커니즘
 
 ### 2.4 Training & 2.5 Version 1.1
 
-![TinyLlama_logo](posts/assets/TinyLlama/figure_1.png){: style="display: block; margin: auto; width: 50%;"}
+![TinyLlama_logo](_posts/assets/TinyLlama/figure_1.png){: style="display: block; margin: auto; width: 50%;"}
 
 TinyLlama는 다음 토큰을 예측하는 방식인 Autoregressive 방식으로, 다음의 설정을 기반으로 TinyLlama는 효율적으로 학습을 진행하였다.
 
@@ -160,7 +160,7 @@ TinyLlama는 다음 토큰을 예측하는 방식인 Autoregressive 방식으로
 
 스케줄러와 데이터 로딩 과정에 관한 implementation 이슈를 해결하기 위해 모델을 처음부터 다시 학습시켰고 다음과 같은 주요 변경 사항과 개선이 이루어졌다.
 
-![TinyLlama_logo](posts/assets/TinyLlama/fsdp.png){: style="display: block; margin: auto; width: 50%;"}
+![TinyLlama_logo](_posts/assets/TinyLlama/fsdp.png){: style="display: block; margin: auto; width: 50%;"}
  
 #### 1. 통신 오버헤드 감소
 FSDP(Fully Sharded Data Parallel)를 활용해 노드 내부에서만 모델 파라미터를 샤딩하도록 변경하여 통신 오버헤드를 줄였
