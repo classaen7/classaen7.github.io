@@ -15,7 +15,7 @@ date: 2025-01-27 19:24 +0900
 ---
 
 
-![TinyLlama_logo](_posts/assets/TinyLlama/TinyLlama_logo.png){: style="display: block; margin: auto; width: 50%;"}
+![TinyLlama_logo]( /assets/TinyLlama/TinyLlama_logo.png){: style="display: block; margin: auto; width: 50%;"}
 
 
 LLM(Large Language Model)을 학습하거나 사용할 때 하드웨어적 제약으로 인해 개인 컴퓨터나 GPU 서버에서 모델을 실행하기 어려운 경우가 많다. 이러한 한계는 작은 언어 모델(SLM)을 찾게 되는 주요 동기가 된다.
