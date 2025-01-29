@@ -20,7 +20,7 @@ date: 2025-01-27 19:24 +0900
 
 LLM(Large Language Model)을 학습하거나 사용할 때 하드웨어적 제약으로 인해 개인 컴퓨터나 GPU 서버에서 모델을 실행하기 어려운 경우가 많다. 이러한 한계는 작은 언어 모델(SLM)을 찾게 되는 주요 동기가 된다.
 
-TinyLlama는 SLM(Small Language Model) 중 하나로, 기존 Llama 모델을 작게 만들어 효율적으로 만든 모델이다. TinyLlama 논문을 읽고 어떤 방식으로 모델을 작게 구현했는지를 확인해보겠다.
+TinyLlama는 SLM(Small Language Model) 중 하나로, 기존 Llama 모델을 작게 만들어 효율적으로 만든 모델이다. TinyLlama 논문을 읽고 어떤 방식으로 SLM을 구현했는지를 확인해보겠다.
 
 
 
@@ -38,7 +38,7 @@ TinyLlama는 SLM(Small Language Model) 중 하나로, 기존 Llama 모델을 작
 
 ## 1. Introduction
 
-자연어 처리(NLP)에서 언어 모델의 성능 향상은 주로 모델 크기와 학습 데이터의 확장에서 비롯되며, 일부 연구는 대규모 모델에서만 나타나는 능력을 발견했다. (emergent intelligence) <br>
+자연어 처리(NLP)에서 언어 모델의 성능 향상은 주로 모델 크기와 학습 데이터의 확장에서 비롯되며, 일부 연구는 대규모 모델에서만 나타나는 능력<font color="gray">(emergent intelligence)</font>을 발견했다.  <br>
 그러나 작은 모델을 더 많은 데이터로 학습시키는 가능성은 충분히 탐구되지 않았다. 
 이 논문은 스케일링 법칙의 한계를 넘어, 10억 개 매개변수를 가진 Llama2 모델을 대규모 데이터로 학습시켜 작은 모델의 성능과 가능성을 탐구한다.
 
@@ -52,27 +52,21 @@ TinyLlama의 Pre-training 과정에 대한 데이터셋, 모델 아키텍처, �
 
 ### 2.1 Pre-training data
 
-SlimPajama와 StarCoder 데이터를 약 7:3 비율로 결합하여 9500억 개의 토큰을 생성하고, Llama 토크나이저를 사용하여 처리한다.
+**SlimPajama**와 **Starcoderdata** 데이터를 약 7:3 비율로 결합하여 9500억 개의 토큰을 생성한다. 
 
+이때 SlimPajam는 RedPajama 데이터셋에서 파생된 고품질 코퍼스를 포함하며 Starcoderdata는 Github의 이슈와 텍스트-코드 쌍을 포함한다. 
 
-- **SlimPajama**
-
-RedPajama 데이터셋에서 파생된 고품질 코퍼스로 중복 제거 및 데이터 정제를 통해 원래 RedPajama의 50% 토큰만 유지한다.
-
-
-- **Starcoderdata**
-
-86개의 프로그래밍 언어에 대한 코드 데이터를 포함하며, GitHub 이슈와 텍스트-코드 쌍도 포함한다. <font color="gray">SlimPajama에 포함된 Github 데이터는 중복 방지를 위해 제거한다.</font>
+> Github에서의 여러 TinyLlama 모델들의 데이터 수는 105B ~ 3T까지 다양함을 확인할 수 있다. 집중해야할 것은 Llama2와 같은 데이터 크기인 2T 토큰수의 데이터도 스케일 법칙의 한계를 넘어서 좋은 성능을 얻었다는 것에 초점을 맞춘다.
 
 <br>
 
-- **데이터 예시**
+- **데이터 예시 : Starcoderdata**
 
 |max_stars_repo_path|max_stars_repo_name|content|
 | :----: | :---: | :--- |
 |source/rule_lists.ads|jquorning/CELLE|with Ada.Containers. Doubly_Linked_Lists; <br>  limited with Rules;<br>  package Rule_Lists is type Rule_Access is access all Rules.Rule_Record; <br>  package Lists is new Ada.Containers.Doubly_Linked_Lists (Element_Type => Rule_Access); <br>  -- function Element (List : Lists.List) return Natural;  end Rule_Lists; |
 
-> SlimPajama는 문장 데이터셋, StarCoder 코드 데이터셋을 담고 있다.<br>
+
 > 각 데이터셋의 자세한 예시는 허깅페이스를 통해 확인 가능하다.
 
 ### 2.2 Architecture
@@ -230,6 +224,9 @@ TinyLlama가 언어 모델 연구를 민주화하고, 이 분야의 미래 연�
 ## 개인 해석
 Paper with Codes에서 SLM 모델에 대해 찾아보면 가장 상단에 있는 논문인 TinyLlama 모델에 대해서 리뷰해보았다.
 
+LLM의 성능을 아직까지 왜 잘되는지에 대한 정답을 찾지 못했다는 점에서 모델이 스케일 법칙의 한계를 어떻게 이겨냈는지 와닿지는 않는다. 단순히 결과론적으로 작은 크기의 모델에도 큰 데이터셋이 좋은 성능을 일구는데 도움이 된다는 것에 초점을 맞춘 논문인것 같다.
+
+기대했던 것은 LLM모델을 어떻게 압축하여 SLM으로 만들었을까라는 궁금증에서 해당 논문을 리뷰하게 되었는데, 그런것 보다는 모델을 더 효율적으로 학습시키는 기술들에 대한 공부의 필요성을 느끼면서 논문 리뷰를 마무리 하겠다.
 
 
 
